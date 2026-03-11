@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ♿ Wheelchair Accessibility Map
 
-## Getting Started
+A real-time, interactive mapping application designed to help users identify and contribute wheelchair-accessible locations. This project leverages the **Overpass API (OpenStreetMap)** to fetch accessibility data and **Leaflet.js** for a smooth, responsive map interface. 
 
-First, run the development server:
+Currently, the core logic is implemented in vanilla JavaScript (`app.js`), but the project is configured as a **Next.js** application with **Tailwind CSS**, **Radix UI**, and **Supabase** dependencies ready for modern full-stack development.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🌟 Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+* **Real-time Geolocation:** Automatically centers the map on the user's current position to show nearby accessible spots.
+* **Overpass API Integration:** Fetches "live" accessibility data directly from OpenStreetMap, including ramps, elevators, and accessible toilets.
+* **Custom Map Markers:** Uses Font Awesome icons to clearly designate accessible points on the map.
+* **Interactive Info Panel:** Displays a summary of results and detailed information when a marker is clicked.
+* **Crowdsourced Contributions:** Allows users to manually "Add Missing Points" through a custom modal form (currently simulated for frontend demonstration).
+* **Mobile Responsive:** A clean UI that adapts to both desktop and mobile screens.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+* **Frontend:** HTML5, CSS3, JavaScript (ES6+)
+* **Framework Framework/Environment:** Next.js 15, React 19
+* **Mapping:** Leaflet.js & React-Google-Maps (configured)
+* **Data Source:** OpenStreetMap via Overpass API
+* **Styling:** Tailwind CSS
+* **UI Components:** Radix UI, Tabler Icons, Lucide React
+* **Backend Ready:** Supabase configured in dependencies
 
-## Learn More
+## 🚀 Getting Started
 
-To learn more about Next.js, take a look at the following resources:
+### Prerequisites
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* [Node.js](https://nodejs.org/) (v18 or higher recommended)
+* npm, yarn, or pnpm
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Installation
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/your-username/asl-accessibility-map.git](https://github.com/your-username/asl-accessibility-map.git)
+   cd asl-accessibility-map
