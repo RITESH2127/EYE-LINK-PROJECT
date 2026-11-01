@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="560" viewBox="0 0 1600 560" role="img" aria-labelledby="title desc">
+  <title id="title">EYE-LINK — Wheelchair accessibility map</title>
+  <desc id="desc">A clean, dark blue and teal illustration of a map with accessible-location markers, route lines, and the EYE-LINK project title.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#071a2c"/><stop offset="1" stop-color="#102f46"/></linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#45d6c5"/><stop offset="1" stop-color="#78e0b5"/></linearGradient>
+    <pattern id="grid" width="56" height="56" patternUnits="userSpaceOnUse"><path d="M56 0H0V56" fill="none" stroke="#a7c8d8" stroke-opacity=".08" stroke-width="1"/></pattern>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1600" height="560" rx="34" fill="url(#bg)"/><rect width="1600" height="560" rx="34" fill="url(#grid)"/>
+  <g opacity=".22" fill="none" stroke="#a8d4df" stroke-width="3">
+    <path d="M770 0L720 110 810 190 735 285 815 385 760 560"/><path d="M950 0L900 100 980 190 900 285 1000 390 940 560"/>
+    <path d="M620 140L1050 140M560 260L1120 260M640 390L1080 390"/>
+  </g>
+  <g transform="translate(970 66)">
+    <path d="M60 25C-10 25-45 82-45 137c0 91 105 205 105 205S165 228 165 137C165 82 130 25 60 25Z" fill="#143e54" stroke="url(#accent)" stroke-width="5" filter="url(#glow)"/>
+    <circle cx="60" cy="132" r="42" fill="#45d6c5" fill-opacity=".16" stroke="#78e0b5" stroke-width="4"/>
+    <circle cx="60" cy="132" r="13" fill="#78e0b5"/>
+  </g>
+  <g transform="translate(1190 230)">
+    <path d="M0 0C95-70 165-35 200 25S290 115 360 50" fill="none" stroke="#45d6c5" stroke-width="7" stroke-linecap="round" stroke-dasharray="2 18"/>
+    <circle cx="0" cy="0" r="13" fill="#78e0b5"/><circle cx="360" cy="50" r="13" fill="#78e0b5"/>
+  </g>
+  <g transform="translate(1050 390)" fill="none" stroke="#78e0b5" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="30" cy="30" r="25"/><path d="M30 10v20h20M30 30l-15 20M30 30l20 20"/>
+  </g>
+  <g transform="translate(105 145)">
+    <text x="0" y="0" fill="#78e0b5" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" letter-spacing="5">OPEN ACCESSIBILITY MAPPING</text>
+    <text x="0" y="105" fill="#f4fbff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="100" font-weight="800" letter-spacing="-3">EYE-LINK</text>
+    <rect x="2" y="137" width="240" height="7" rx="4" fill="url(#accent)"/>
+    <text x="0" y="210" fill="#d2e5ed" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="500">Wheelchair accessibility map</text>
+    <text x="0" y="270" fill="#a9c5d2" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="23">Discover accessible places. Make local knowledge visible.</text>
+  </g>
+  <text x="105" y="500" fill="#7e9eae" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" letter-spacing="2">OPENSTREETMAP DATA  /  COMMUNITY KNOWLEDGE  /  ACCESS FOR EVERYONE</text>
+</svg>
