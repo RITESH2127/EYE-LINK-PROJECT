@@ -4,7 +4,7 @@
 
 **Making the world more accessible—one location at a time.**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-not%20specified-lightgrey)](#license)
 [![Next.js](https://img.shields.io/badge/Next.js-15.1-000?logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript)](https://www.typescriptlang.org/)
@@ -13,6 +13,21 @@
 [![Platform](https://img.shields.io/badge/Platform-JavaScript%20%2F%20TypeScript-F7DF1E?logo=javascript)](#tech-stack)
 
 </div>
+
+---
+
+## Project status and repository layout
+
+This repository currently contains two different layers of work:
+
+- **Standalone Leaflet prototype:** the root `index.html` and `app.js` implement a browser-based map that queries OpenStreetMap through Overpass and lets visitors add local, in-memory markers.
+- **Next.js setup files:** `package.json`, `next.config.ts`, `middleware.ts`, and the TypeScript/Tailwind configuration describe a Next.js application setup. However, the current tracked root tree does not include a Next.js `app/` or `src/app/` route entry point, so the Next.js development/build commands should not be assumed to work from this snapshot.
+
+The standalone prototype is not wired to Supabase or another persistence service: points added through its form exist only in the current browser session and are not uploaded to OpenStreetMap. The Overpass response is also limited by what contributors have tagged in OpenStreetMap; missing or incomplete tags do not prove that a facility is inaccessible.
+
+**Run the standalone prototype:** open `index.html` through a local static web server (for example, `npx http-server .`) rather than relying on the Next.js scripts. Browser geolocation generally requires a secure context such as localhost or HTTPS.
+
+**Package manager:** both npm and pnpm lockfiles are present. Use one package manager consistently and commit only its corresponding lockfile when maintaining the Next.js setup.
 
 ---
 
@@ -162,9 +177,9 @@ User Browser (Client-Side)
 [User Interaction] → Add new points or explore existing locations
 ```
 
-### **Component Breakdown**
+### **Prototype and configuration breakdown**
 
-1. **Map Initialization Module** (`app.js` - Core Logic)
+1. **Map Initialization Module** (`app.js` - standalone Leaflet prototype)
    - Initializes Leaflet map with OpenStreetMap base layer
    - Implements geolocation detection fallback
    - Manages layer groups for accessibility markers
@@ -189,10 +204,10 @@ User Browser (Client-Side)
    - Form validation (name, type, accessibility level, notes)
    - Client-side storage (ready for backend integration)
 
-6. **Next.js Application Structure**
-   - TypeScript configuration for type safety
-   - Tailwind CSS configuration with custom themes
-   - Middleware for potential authentication flows (Supabase integration)
+6. **Next.js Configuration (incomplete in the current tree)**
+   - TypeScript and Tailwind configuration files are present
+   - Middleware is currently a pass-through placeholder
+   - A Next.js route entry point is not present in the tracked root tree
 
 ### **API Integration Points**
 
@@ -270,14 +285,9 @@ The application will be available at `http://localhost:3000` (default Next.js po
 
 Navigate to `http://localhost:3000` and grant location permissions when prompted.
 
-### **Alternative: Build for Production**
+### **Next.js build status**
 
-To create an optimized production build:
-
-```bash
-npm run build
-npm run start
-```
+The repository currently lacks a tracked Next.js `app/` or `src/app/` entry point, so `npm run build` is not verified for this snapshot. The standalone Leaflet prototype can be served independently as described above.
 
 ---
 
@@ -547,7 +557,7 @@ We believe in the power of community. Your contributions—whether code, ideas, 
 
 ## 📄 License
 
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+A LICENSE file is not currently present in the repository. Add a license file before describing the project as MIT-licensed or accepting contributions under that license.
 
 ### **MIT License Summary**
 
