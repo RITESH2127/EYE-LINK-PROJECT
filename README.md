@@ -1,645 +1,265 @@
-# ♿ EYE-LINK: Wheelchair Accessibility Map
-
 <div align="center">
 
-**Making the world more accessible—one location at a time.**
+<img src="assets/eye-link-banner.svg" alt="EYE-LINK — Wheelchair accessibility map" width="100%">
 
-[![License](https://img.shields.io/badge/License-not%20specified-lightgrey)](#license)
-[![Next.js](https://img.shields.io/badge/Next.js-15.1-000?logo=next.js)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
-[![Open Source](https://img.shields.io/badge/Open%20Source-Yes-brightgreen)](#contributing)
-[![Platform](https://img.shields.io/badge/Platform-JavaScript%20%2F%20TypeScript-F7DF1E?logo=javascript)](#tech-stack)
+# EYE-LINK
+
+### A community-informed map for discovering wheelchair-accessible places.
+
+[![OpenStreetMap](https://img.shields.io/badge/Data-OpenStreetMap-7ebc6f?logo=openstreetmap&logoColor=white)](https://www.openstreetmap.org/)
+[![Leaflet](https://img.shields.io/badge/Maps-Leaflet-199900?logo=leaflet&logoColor=white)](https://leafletjs.com/)
+[![JavaScript](https://img.shields.io/badge/Language-JavaScript-f7df1e?logo=javascript&logoColor=222)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Next.js configuration](https://img.shields.io/badge/Framework%20setup-Next.js%2015-000000?logo=nextdotjs)](https://nextjs.org/)
+[![Status](https://img.shields.io/badge/Status-Prototype-informational)](#project-status)
+
+[Overview](#overview) · [Features](#features) · [Architecture](#architecture) · [Run locally](#run-locally) · [Limitations](#known-limitations) · [Roadmap](#roadmap) · [Contributing](#contributing)
 
 </div>
 
 ---
 
-## Project status and repository layout
+## Overview
 
-This repository currently contains two different layers of work:
+EYE-LINK is a wheelchair-accessibility mapping prototype. It uses browser geolocation, Leaflet, OpenStreetMap map tiles, and the Overpass API to help people explore places that have wheelchair-accessibility tags in OpenStreetMap.
 
-- **Standalone Leaflet prototype:** the root `index.html` and `app.js` implement a browser-based map that queries OpenStreetMap through Overpass and lets visitors add local, in-memory markers.
-- **Next.js setup files:** `package.json`, `next.config.ts`, `middleware.ts`, and the TypeScript/Tailwind configuration describe a Next.js application setup. However, the current tracked root tree does not include a Next.js `app/` or `src/app/` route entry point, so the Next.js development/build commands should not be assumed to work from this snapshot.
+The project is built around a simple idea: accessibility information is more useful when it is visible, location-aware, and improved by local knowledge. EYE-LINK provides a map interface for exploring tagged places and trying out community-submitted map markers.
 
-The standalone prototype is not wired to Supabase or another persistence service: points added through its form exist only in the current browser session and are not uploaded to OpenStreetMap. The Overpass response is also limited by what contributors have tagged in OpenStreetMap; missing or incomplete tags do not prove that a facility is inaccessible.
+> **Important:** EYE-LINK is an early-stage prototype, not a verified accessibility service. OpenStreetMap coverage varies by location, and a map tag cannot guarantee that a venue is suitable for a particular person's needs. Confirm critical details with the venue before travelling.
 
-**Run the standalone prototype:** open `index.html` through a local static web server (for example, `npx http-server .`) rather than relying on the Next.js scripts. Browser geolocation generally requires a secure context such as localhost or HTTPS.
+## At a glance
 
-**Package manager:** both npm and pnpm lockfiles are present. Use one package manager consistently and commit only its corresponding lockfile when maintaining the Next.js setup.
+| Area | Current implementation |
+|---|---|
+| Map rendering | Leaflet with OpenStreetMap tiles |
+| Location | Browser Geolocation API, with a default map fallback |
+| Accessibility data | Overpass API query for selected wheelchair tags |
+| Markers | Leaflet markers and popups for returned node elements |
+| User-added locations | Temporary markers held in the current browser session |
+| Persistence | Not implemented for user-added locations |
+| Authentication | Not implemented in the standalone prototype |
+| Application entry point | Root `index.html` and `app.js` |
 
----
+## Features
 
-## 🎯 Overview
+- **Location-aware map:** requests browser location and centres the map when permission is granted.
+- **Open map data:** retrieves nearby OpenStreetMap elements through the Overpass API.
+- **Accessible-place markers:** displays returned point features with a popup containing available tag information.
+- **Contribution prototype:** lets a visitor place a temporary marker and add a name, category, accessibility level, and notes.
+- **Responsive map panel:** includes a compact information panel for smaller screens.
+- **Open ecosystem:** built with Leaflet and OpenStreetMap data rather than a proprietary map renderer.
 
-**EYE-LINK** is a cutting-edge, real-time interactive mapping application designed to empower wheelchair users and accessibility advocates by identifying and contributing wheelchair-accessible locations in their communities. 
+## Architecture
 
-Leveraging the power of **OpenStreetMap** via the **Overpass API**, EYE-LINK provides live accessibility data including accessible ramps, elevators, wheelchair-friendly entrances, and accessible restrooms. The platform combines geolocation services with crowdsourced contributions, creating a dynamic, community-driven accessibility database that grows stronger with every user.
+The diagrams below are Mermaid diagrams. GitHub renders them directly in the README, so they remain readable and update alongside the source documentation.
 
-### 🤔 The Problem
+### Data flow
 
-Navigating the world as a wheelchair user remains challenging. Existing maps lack comprehensive, real-time accessibility information. Finding accessible routes, entrances, and facilities requires extensive research, often leaving users stranded or frustrated.
-
-### ✨ The Solution
-
-EYE-LINK democratizes accessibility information by:
-- **Aggregating** real-time data from OpenStreetMap
-- **Visualizing** accessible locations with intuitive markers and popups
-- **Enabling** community contributions through crowdsourced point submissions
-- **Providing** mobile-responsive access from any device
-- **Reducing** time spent searching for accessible routes and facilities
-
----
-
-## 🌟 Key Features
-
-✅ **Real-Time Geolocation Detection**
-   - Automatically centers the map on your current location
-   - Seamless GPS integration for instant context
-
-✅ **Live Accessibility Data Integration**
-   - Direct connection to OpenStreetMap's Overpass API
-   - Queries for wheelchair-accessible facilities (ramps, elevators, toilets, etc.)
-   - Configurable search radius (1–2 km and beyond)
-
-✅ **Intelligent Marker System**
-   - Custom wheelchair icons for clear visual identification
-   - Color-coded accessibility levels (Full Access / Limited Access)
-   - Categorized amenities (entrances, parking, restrooms)
-
-✅ **Interactive Information Panels**
-   - Click markers to view detailed facility information
-   - Displays amenity type, accessibility level, and user notes
-   - Real-time result summaries and count statistics
-
-✅ **Crowdsourced Contributions**
-   - "Add Missing Accessibility Point" feature
-   - Modal form for detailed point submission
-   - Support for multiple accessibility categories
-   - User-friendly annotation system for facility details
-
-✅ **Mobile-First Responsive Design**
-   - Optimized for desktop, tablet, and mobile devices
-   - Touch-friendly interactions
-   - Adaptive layout for smaller screens
-
-✅ **Modern Web Technology Stack**
-   - Next.js 15 for server-side rendering
-   - React 19 for component-based UI
-   - TypeScript for type safety and developer experience
-   - Tailwind CSS for rapid, consistent styling
-
----
-
-## 🛠️ Tech Stack
-
-### **Frontend Architecture**
-
-| Category | Technology | Version | Purpose |
-|----------|-----------|---------|---------|
-| **Framework** | Next.js | 15.1.7 | Server-side rendering, routing, optimization |
-| **UI Library** | React | 19.0.0 | Component-based UI development |
-| **Language** | TypeScript / JavaScript | 5.0 / ES6+ | Type-safe, modern code |
-| **Styling** | Tailwind CSS | 3.4.1 | Utility-first CSS framework |
-| **Styling** | PostCSS | 8.0 | CSS transformation and plugins |
-
-### **UI Component Libraries**
-
-| Library | Version | Components |
-|---------|---------|-----------|
-| Radix UI | 1.2.x | Accordion, Avatar, Checkbox, Dropdown, Label, Navigation, Popover, Select, Slot, Switch, Tabs, Tooltip |
-| Tabler Icons | 3.30.0 | Icon library for accessibility and UI |
-| Lucide React | 0.475.0 | Modern, customizable icon set |
-| React Icons | 5.4.0 | Comprehensive icon collection |
-
-### **Mapping & Geolocation**
-
-| Library | Version | Purpose |
-|---------|---------|---------|
-| Leaflet.js | 1.9.4 | Interactive mapping library |
-| React-Google-Maps | 2.20.6 | Google Maps integration |
-| Leaflet Routing Machine | 3.2.12 | Route calculation and visualization |
-| @googlemaps/js-api-loader | 1.16.8 | Google Maps API loader |
-
-### **Data & Backend**
-
-| Service | Version | Purpose |
-|---------|---------|---------|
-| Supabase Auth | 0.10.0 | Authentication and user management |
-| Supabase SSR | 0.5.2 | Server-side rendering support |
-| Supabase JS Client | 2.48.1 | Database and real-time API |
-| **External API** | Overpass API | Live accessibility data from OpenStreetMap |
-
-### **Utilities & Enhancement**
-
-| Package | Version | Purpose |
-|---------|---------|---------|
-| Framer Motion | 12.4.3 | Smooth animations and transitions |
-| Canvas Confetti | 1.9.3 | Celebration animations |
-| Date-fns | 4.1.0 | Date manipulation and formatting |
-| clsx | 2.1.1 | Conditional class name merging |
-| Tailwind Merge | 3.0.1 | Tailwind CSS class merging |
-| Sonner | 1.7.4 | Toast notifications |
-| Geist Font | 1.3.1 | Premium typography |
-
-### **Development Tools**
-
-| Tool | Version |
-|------|---------|
-| Node.js | 18+ (recommended) |
-| Package Manager | npm, yarn, or pnpm |
-| Type Checking | TypeScript 5.0 |
-
----
-
-## 🏗️ System Architecture
-
-### **High-Level Data Flow**
-
-```
-User Browser (Client-Side)
-    ↓
-[Geolocation API] → Determine user's latitude/longitude
-    ↓
-[Leaflet.js] → Initialize map with OpenStreetMap tiles
-    ↓
-[Overpass API Query] → POST accessibility query with coordinates
-    ↓
-[OpenStreetMap Database] → Returns wheelchair-accessible nodes/ways/relations
-    ↓
-[Data Processing] → Parse elements, extract tags, format data
-    ↓
-[Marker Rendering] → Create custom icons and add to map layer
-    ↓
-[Interactive Popups] → Display facility details on marker click
-    ↓
-[User Interaction] → Add new points or explore existing locations
+```mermaid
+flowchart TD
+    A["Visitor opens index.html"] --> B["Browser requests location"]
+    B --> C{"Location permission granted?"}
+    C -- Yes --> D["Use visitor coordinates"]
+    C -- No --> E["Use default map coordinates"]
+    D --> F["Initialize Leaflet map"]
+    E --> F
+    F --> G["Load OpenStreetMap tiles"]
+    D --> H["Build Overpass query"]
+    E --> H
+    H --> I["Overpass API"]
+    I --> J["OpenStreetMap data"]
+    J --> K["Parse returned elements"]
+    K --> L["Render node markers and popups"]
+    M["Visitor adds a point"] --> N["Create temporary Leaflet marker"]
+    N --> O["Visible in current browser session only"]
 ```
 
-### **Prototype and configuration breakdown**
+### Runtime components
 
-1. **Map Initialization Module** (`app.js` - standalone Leaflet prototype)
-   - Initializes Leaflet map with OpenStreetMap base layer
-   - Implements geolocation detection fallback
-   - Manages layer groups for accessibility markers
-
-2. **Accessibility Data Fetcher**
-   - Constructs Overpass API queries with dynamic coordinates and radius
-   - Handles POST requests to Overpass interpreter
-   - Error handling with user-friendly messages
-
-3. **Data Processor**
-   - Parses API responses for relevant elements
-   - Extracts tags (name, amenity, accessibility level, entrance type)
-   - Formats data for marker creation
-
-4. **Marker System**
-   - Custom Leaflet `divIcon` with Font Awesome wheelchair icons
-   - Color-coded based on accessibility level
-   - Configurable icon anchors and popup positioning
-
-5. **User Contribution Form**
-   - Modal-based UI for adding new accessibility points
-   - Form validation (name, type, accessibility level, notes)
-   - Client-side storage (ready for backend integration)
-
-6. **Next.js Configuration (incomplete in the current tree)**
-   - TypeScript and Tailwind configuration files are present
-   - Middleware is currently a pass-through placeholder
-   - A Next.js route entry point is not present in the tracked root tree
-
-### **API Integration Points**
-
-- **Overpass API**: `https://overpass-api.de/api/interpreter`
-  - Query Format: OpenStreetMap Query Language (OQL)
-  - Response Format: JSON with elements array
-  - Search Parameters: Wheelchair tags, geospatial radius, element types
-
-- **Geolocation API**: Browser native
-  - High accuracy GPS data
-  - Fallback to default location on permission denial
-
----
-
-## 🚀 Getting Started
-
-### **Prerequisites**
-
-Before you begin, ensure you have the following installed:
-
-- **Node.js** (v18 or higher) – [Download](https://nodejs.org/)
-- **npm**, **yarn**, or **pnpm** – Comes with Node.js or install separately
-- **Git** – [Download](https://git-scm.com/)
-- **A modern web browser** – Chrome, Firefox, Safari, or Edge (recommended)
-- **Code Editor** – VS Code, WebStorm, or your favorite editor
-
-### **Installation & Setup**
-
-#### **Step 1: Clone the Repository**
-
-```bash
-git clone https://github.com/RITESH2127/EYE-LINK-PROJECT.git
-cd EYE-LINK-PROJECT
+```mermaid
+flowchart LR
+    subgraph Browser["Browser"]
+      HTML["index.html"]
+      JS["app.js"]
+      GEO["Geolocation API"]
+      MAP["Leaflet map"]
+      FORM["Contribution form"]
+      HTML --> JS
+      JS <--> GEO
+      JS --> MAP
+      MAP <--> FORM
+    end
+    subgraph External["External services"]
+      TILES["OpenStreetMap tile service"]
+      OVERPASS["Overpass API"]
+      OSM["OpenStreetMap database"]
+      MAP --> TILES
+      JS --> OVERPASS
+      OVERPASS --> OSM
+    end
 ```
 
-#### **Step 2: Install Dependencies**
+### Repository layout
 
-Using **npm**:
-```bash
-npm install
+```text
+EYE-LINK-PROJECT/
+├── assets/
+│   └── eye-link-banner.svg
+├── index.html              # Standalone browser entry point
+├── app.js                  # Leaflet map and Overpass integration
+├── README.md               # Project documentation and live diagrams
+├── package.json            # JavaScript / Next.js package configuration
+├── package-lock.json       # npm dependency lockfile
+├── pnpm-lock.yaml          # pnpm dependency lockfile
+├── middleware.ts           # Current Next.js pass-through middleware
+├── next.config.ts          # Next.js configuration
+├── tailwind.config.ts      # Tailwind configuration
+├── postcss.config.mjs      # PostCSS configuration
+├── tsconfig.json           # TypeScript configuration
+└── components.json         # UI component generator configuration
 ```
 
-Or using **yarn**:
-```bash
-yarn install
-```
+## Run locally
 
-Or using **pnpm** (fastest):
-```bash
-pnpm install
-```
+The currently runnable map prototype is the root-level static site. It does not require the Next.js development server.
 
-#### **Step 3: Configure Environment Variables** (if needed)
+### Requirements
 
-Create a `.env.local` file in the root directory for any external service credentials:
+- Node.js (for the optional static server)
+- A modern browser
+- Internet access for map tiles and Overpass requests
+- Location permission for automatic centring (optional)
 
-```env
-# Example: If using Supabase
-# NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-# NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+### Start the prototype
 
-# Example: If using Google Maps
-# NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your-google-maps-api-key
-```
+1. Clone the repository:
 
-#### **Step 4: Run the Development Server**
-
-```bash
-npm run dev
-```
-
-The application will be available at `http://localhost:3000` (default Next.js port).
-
-#### **Step 5: Open in Browser**
-
-Navigate to `http://localhost:3000` and grant location permissions when prompted.
-
-### **Next.js build status**
-
-The repository currently lacks a tracked Next.js `app/` or `src/app/` entry point, so `npm run build` is not verified for this snapshot. The standalone Leaflet prototype can be served independently as described above.
-
----
-
-## 📖 Usage
-
-### **Basic Usage**
-
-1. **Allow Location Access**
-   - Grant browser permission to access your geolocation
-   - The map automatically centers on your location
-
-2. **Explore Accessible Locations**
-   - The map displays wheelchair-accessible facilities with wheelchair icons
-   - Zoom in/out using your mouse wheel or touch gestures
-   - Pan the map by clicking and dragging
-
-3. **View Facility Details**
-   - Click any wheelchair marker to open a popup
-   - View facility name, accessibility level, type, and additional notes
-   - Close the popup by clicking the X button
-
-4. **Add a New Accessibility Point**
-   - Click the **"Add Missing Accessibility Point"** button
-   - The map cursor changes to a crosshair
-   - Click on the map to place a new marker
-   - Fill out the form with:
-     - **Name/Description** of the facility
-     - **Type** (Entrance, Ramp, Elevator, Toilet, Parking, Other)
-     - **Accessibility Level** (Full Access / Limited Access)
-     - **Additional Notes** (optional)
-   - Click **"Save Point"** to add it to the map
-   - Click **"Cancel"** to exit add mode
-
-### **Code Examples**
-
-#### **Accessing the Map**
-
-```javascript
-// The map object is globally available
-let currentZoom = map.getZoom();
-map.setView([lat, lon], 15); // Center on coordinates at zoom level 15
-```
-
-#### **Querying Accessibility Data**
-
-```javascript
-// Fetch accessibility data for a specific radius
-fetchAccessibilityData(51.505, -0.09, 2); // Latitude, Longitude, Radius in km
-```
-
-#### **Creating Custom Markers**
-
-```javascript
-const customIcon = L.divIcon({
-  className: "accessibility-icon",
-  html: '<i class="fas fa-wheelchair" style="font-size: 24px; color: #1e88e5;"></i>',
-  iconSize: [30, 30],
-  iconAnchor: [15, 15],
-  popupAnchor: [0, -15],
-});
-
-const marker = L.marker([lat, lon], { icon: customIcon }).addTo(map);
-```
-
-### **Expected Output**
-
-**On successful data fetch:**
-```
-Found 15 wheelchair accessible location(s).
-Click on markers to view details.
-```
-
-**On marker click:**
-```
-Wheelchair Accessible Entrance
-Accessibility: Full Access
-Type: Entrance
-Location ID: 12345678
-```
-
-**On add point submission:**
-```
-[New marker appears on map with popup]
-"Library Ramp - User-added point (not yet in OpenStreetMap)"
-```
-
-### **Screenshots / Visual Placeholders**
-
-```
-┌─────────────────────────────────────────────────┐
-│  🗺️  Wheelchair Accessibility Map               │
-├─────────────────────────────────────────────────┤
-│                                                 │
-│        [Interactive Map with Markers]           │
-│                                                 │
-│                ♿ ♿         ♿                   │
-│           ♿          ♿                         │
-│                                                 │
-│  Info Panel (Top Right):                        │
-│  ─────────────────────────                      │
-│  Wheelchair Accessibility Map                   │
-│  Found 12 locations                             │
-│  [Add Missing Point] [Button]                   │
-│                                                 │
-└─────────────────────────────────────────────────┘
-```
-
----
-
-## 🗺️ Roadmap & Future Enhancements
-
-### **Phase 1: Core Features** ✅ (Current)
-- [x] Real-time geolocation detection
-- [x] Overpass API integration
-- [x] Interactive marker system
-- [x] Crowdsourced contribution form
-- [x] Mobile-responsive design
-- [x] Next.js and React setup
-
-### **Phase 2: Data Persistence** 🚧 (In Progress)
-- [ ] Supabase database integration for user submissions
-- [ ] Authentication system (Google, GitHub OAuth)
-- [ ] User profiles and contribution tracking
-- [ ] Backend validation and moderation
-
-### **Phase 3: Advanced Features** 📅 (Planned)
-- [ ] Route planning with accessibility filters
-- [ ] Advanced search filters (facility type, accessibility level)
-- [ ] User reviews and ratings for locations
-- [ ] Photo uploads for facilities
-- [ ] Accessibility challenges and solutions reporting
-- [ ] Integration with OpenStreetMap editing tools
-- [ ] Multi-language support (i18n)
-- [ ] Dark mode / light mode theme toggle
-
-### **Phase 4: Community & Analytics** 🎯 (Long-term)
-- [ ] Community forums and discussions
-- [ ] Contribution leaderboards and gamification
-- [ ] Analytics dashboard for accessibility trends
-- [ ] Heat maps of underserved areas
-- [ ] Partnership with accessibility organizations
-- [ ] Offline map support (PWA)
-- [ ] Native mobile apps (React Native)
-
-### **Phase 5: Enterprise & Integration** 🌟 (Vision)
-- [ ] API for third-party integrations
-- [ ] City and municipality partnerships
-- [ ] Real-time accessibility event notifications
-- [ ] AI-powered accessibility predictions
-- [ ] Integration with public transportation systems
-
----
-
-## 🤝 Contributing
-
-We believe in the power of community. Your contributions—whether code, ideas, or feedback—help make the world more accessible.
-
-### **Getting Started with Contributing**
-
-1. **Fork the Repository**
    ```bash
-   Click the "Fork" button on GitHub
-   ```
-
-2. **Clone Your Fork**
-   ```bash
-   git clone https://github.com/YOUR-USERNAME/EYE-LINK-PROJECT.git
+   git clone https://github.com/RITESH2127/EYE-LINK-PROJECT.git
    cd EYE-LINK-PROJECT
    ```
 
-3. **Create a Feature Branch**
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-   
-   **Branch Naming Conventions:**
-   - `feature/add-new-feature`
-   - `fix/bug-description`
-   - `docs/update-readme`
-   - `refactor/improve-performance`
+2. Start a local static server from the repository root. For example, with Python:
 
-4. **Make Your Changes**
-   - Write clean, well-documented code
-   - Follow the existing code style
-   - Add comments for complex logic
-   - Test your changes thoroughly
-
-5. **Commit Your Changes**
    ```bash
-   git add .
-   git commit -m "feat: add feature description"
-   ```
-   
-   **Commit Message Format:**
-   - `feat:` for new features
-   - `fix:` for bug fixes
-   - `docs:` for documentation
-   - `style:` for code style changes
-   - `refactor:` for code refactoring
-   - `test:` for tests
-
-6. **Push to Your Fork**
-   ```bash
-   git push origin feature/your-feature-name
+   python -m http.server 8000
    ```
 
-7. **Open a Pull Request**
-   - Navigate to the original repository
-   - Click "New Pull Request"
-   - Select your branch and provide a detailed description
-   - Reference any related issues (e.g., "Closes #42")
+   Or, if Node.js is installed:
 
-### **Pull Request Guidelines**
+   ```bash
+   npx http-server . -p 8000
+   ```
 
-- ✅ Provide a clear, descriptive title
-- ✅ Include a detailed description of changes
-- ✅ Reference related issues
-- ✅ Add screenshots or GIFs for UI changes
-- ✅ Ensure all tests pass
-- ✅ Follow the code style guide
-- ✅ Request review from maintainers
+3. Open [http://localhost:8000](http://localhost:8000).
 
-### **Code Style Guide**
+4. Allow location access if you want the map to centre on your current position. If permission is denied, the prototype uses its default coordinates.
 
-- **JavaScript/TypeScript**: Use ESLint and Prettier for consistency
-  ```bash
-  npm run lint
-  ```
+A local server is recommended instead of opening the HTML file directly. Browser geolocation is generally available only in secure contexts such as localhost and HTTPS.
 
-- **Naming Conventions**:
-  - Variables and functions: `camelCase`
-  - Classes and components: `PascalCase`
-  - Constants: `UPPER_SNAKE_CASE`
+## How it works
 
-- **Component Structure**:
-  ```typescript
-  import React from 'react';
-  
-  interface ComponentProps {
-    // props interface
-  }
-  
-  const MyComponent: React.FC<ComponentProps> = ({ prop }) => {
-    // component logic
-    return <div>Component</div>;
-  };
-  
-  export default MyComponent;
-  ```
+1. The browser loads Leaflet and the page's map interface.
+2. EYE-LINK requests the visitor's coordinates using the Geolocation API.
+3. The app builds an Overpass QL query for nearby elements tagged `wheelchair=yes` or `wheelchair=designated`.
+4. The Overpass API returns matching OpenStreetMap elements.
+5. The current implementation creates map markers for returned **nodes** with coordinates and displays available name, amenity, entrance, description, and element ID values.
+6. The visitor can enter add-point mode, click the map, and create a temporary marker with additional details.
 
-### **Issues & Feature Requests**
+## Data sources and attribution
 
-- Check existing issues before creating a new one
-- Use issue templates (if available)
-- Provide clear, reproducible examples
-- Include screenshots or error logs
-- Tag issues appropriately (bug, feature, documentation)
+- **OpenStreetMap:** map data and community-maintained accessibility tags. [Copyright and attribution](https://www.openstreetmap.org/copyright).
+- **Overpass API:** read-only query interface for OpenStreetMap data. [API documentation](https://wiki.openstreetmap.org/wiki/Overpass_API).
+- **Leaflet:** open-source interactive mapping library. [Documentation](https://leafletjs.com/).
 
-### **Getting Help**
+Please respect the usage policies and capacity limits of the public Overpass and tile services. For a production deployment, consider an appropriate service provider, caching strategy, request throttling, and clear attribution.
 
-- 💬 **Discussion Forums**: [GitHub Discussions](#)
-- 📧 **Email**: [Contact Maintainer](#)
-- 🐛 **Bug Reports**: Use GitHub Issues
-- 💡 **Feature Suggestions**: Create an issue with `[FEATURE REQUEST]` tag
+## Known limitations
 
----
+These limitations reflect the current source code and should be addressed before treating EYE-LINK as a production accessibility tool.
 
-## 📄 License
+| Area | Current limitation | Suggested next step |
+|---|---|---|
+| Data coverage | Results depend on the completeness and accuracy of OpenStreetMap tags. | Show data provenance and allow users to report outdated information. |
+| Element handling | The query requests nodes, ways, and relations, but marker creation currently handles nodes only. | Resolve geometry for ways and relations before rendering them. |
+| Accessibility tags | The query selects `yes` and `designated`; the current `limited` display branch is not reached by that query. | Include and distinguish `limited`, `no`, and `unknown` states where appropriate. |
+| Contributions | User-added markers are only held in the current page session. | Add a validated backend, moderation, and persistent storage. |
+| Input safety | Popup HTML is assembled from map tags and form input. | Escape untrusted text or build popup content using safe DOM APIs. |
+| Error handling | Network and API failures have only basic user feedback. | Handle HTTP status codes, rate limits, malformed responses, and retry states. |
+| Routing | The current prototype does not calculate step-free routes. | Integrate routing only when reliable accessibility constraints and data are available. |
+| Next.js scaffold | Next.js configuration exists, but no tracked `app/`, `src/app/`, or `pages/` route entry point is present. | Decide whether to complete the Next.js app or keep the static prototype as the primary application. |
 
-A LICENSE file is not currently present in the repository. Add a license file before describing the project as MIT-licensed or accepting contributions under that license.
+## Roadmap
 
-### **MIT License Summary**
+The roadmap prioritizes correctness, trust, and user safety before adding complex features.
 
-You are free to:
-- ✅ Use this software for any purpose
-- ✅ Copy, modify, and distribute it
-- ✅ Include it in proprietary applications
+### Phase 1 — Reliable map foundation
 
-You must:
-- ✓ Include the original copyright notice
-- ✓ Include a copy of the MIT License
+- [x] Browser geolocation with fallback coordinates
+- [x] Leaflet map and OpenStreetMap tiles
+- [x] Overpass API integration
+- [x] Basic accessibility markers and popups
+- [x] Temporary map contribution flow
+- [ ] Render node, way, and relation geometries correctly
+- [ ] Add robust loading, empty, and error states
+- [ ] Escape all untrusted popup and form content
 
----
+### Phase 2 — Trusted accessibility information
 
-## 👥 Contact & Community
+- [ ] Clearly distinguish accessible, limited, inaccessible, and unknown information
+- [ ] Show which OpenStreetMap tags support each marker
+- [ ] Add freshness and data-source context
+- [ ] Add filters by facility type and accessibility attributes
+- [ ] Provide a clear report/correction workflow
 
-### **Project Maintainer**
+### Phase 3 — Persistent community contributions
 
-**Ritesh** ([GitHub Profile](https://github.com/RITESH2127))
+- [ ] Design a database schema and backend API
+- [ ] Add authentication and authorization where needed
+- [ ] Validate and moderate submissions
+- [ ] Store contributor reports separately from verified OpenStreetMap data
+- [ ] Add audit history and abuse prevention
 
-### **Get Involved**
+### Phase 4 — Accessible journey planning
 
-- 🌟 **Star this repository** if you find it helpful!
-- 🔔 **Watch for updates** to stay informed
-- 🐛 **Report bugs** through GitHub Issues
-- 💡 **Suggest features** in Discussions
-- 🤝 **Contribute code** via Pull Requests
+- [ ] Investigate routing engines that support wheelchair constraints
+- [ ] Represent barriers, surface quality, kerbs, slopes, and step-free access
+- [ ] Communicate missing route data and uncertainty
+- [ ] Test journeys with wheelchair users and accessibility specialists
 
-### **Follow for Updates**
+## Development notes
 
-- 📱 GitHub: [@RITESH2127](https://github.com/RITESH2127)
-- 💌 Subscribe to updates on the [repository](https://github.com/RITESH2127/EYE-LINK-PROJECT)
+This repository currently contains a standalone Leaflet prototype alongside Next.js, TypeScript, and Tailwind configuration files. The root `index.html` and `app.js` are the entry point for the working prototype described above.
 
----
+The repository also contains both `package-lock.json` and `pnpm-lock.yaml`. Choose one package manager for ongoing development and keep its lockfile authoritative. The Next.js scripts should not be considered verified until a Next.js route entry point is added and a clean install/build is tested.
 
-## 🙏 Acknowledgments
+## Contributing
 
-- **OpenStreetMap** – For the comprehensive, free geographic data
-- **Overpass API** – For the powerful query interface
-- **Leaflet.js** – For the excellent mapping library
-- **Next.js & React Teams** – For amazing frameworks
-- **Tailwind CSS** – For utility-first CSS excellence
-- **Radix UI** – For accessible component primitives
-- **Our Contributors** – For believing in accessibility
+Contributions that improve accuracy, usability, accessibility, and safety are especially welcome.
 
----
+1. Open an issue describing the problem or proposed change.
+2. Fork the repository and create a focused feature branch.
+3. Make the smallest coherent change.
+4. Test the map in a browser, including location-denied and API-error scenarios where relevant.
+5. Include screenshots or a short screen recording for interface changes.
+6. Open a pull request with a clear summary, test notes, and any known limitations.
 
-## ⚖️ Disclaimer
+For accessibility-related changes, explain which user need the change addresses and how it was tested. Do not label a location as fully accessible unless the available evidence supports that claim.
 
-This project is a community-driven effort to improve accessibility. While we strive for accuracy, **data from OpenStreetMap and user contributions may not be complete or current**. Always verify accessibility features directly with venues before visiting. For critical accessibility needs, contact facilities directly.
+## License
 
----
+No license file is currently present in this repository. Until a license is added, reuse, redistribution, and contribution terms are not explicitly granted. Add a license file before describing this project as MIT-licensed.
 
-## 📞 Support
+## Maintainer
 
-If you encounter any issues or need assistance:
+Created and maintained by [Ritesh Kumar](https://github.com/RITESH2127).
 
-1. **Check the [Troubleshooting](#troubleshooting) section** below
-2. **Search existing [GitHub Issues](https://github.com/RITESH2127/EYE-LINK-PROJECT/issues)**
-3. **Create a new issue** with detailed information
-4. **Join our community** discussions for peer support
-
-### **Troubleshooting**
-
-| Issue | Solution |
-|-------|----------|
-| Map not loading | Check internet connection, ensure browser allows geolocation |
-| No markers showing | Verify coordinates are correct, check Overpass API status |
-| Form won't submit | Ensure all required fields are filled, check console for errors |
-| Styling looks broken | Clear cache and hard-refresh (Ctrl+Shift+R or Cmd+Shift+R) |
-| Geolocation denied | Enable location access in browser settings, reload page |
+- Repository: [RITESH2127/EYE-LINK-PROJECT](https://github.com/RITESH2127/EYE-LINK-PROJECT)
+- Issues: [Report a bug or request a feature](https://github.com/RITESH2127/EYE-LINK-PROJECT/issues)
 
 ---
 
 <div align="center">
 
-### **Made with ♥️ to make the world more accessible**
-
-**[⬆ back to top](#eye-link-wheelchair-accessibility-map)**
-
-[![GitHub Stars](https://img.shields.io/github/stars/RITESH2127/EYE-LINK-PROJECT?style=social)](https://github.com/RITESH2127/EYE-LINK-PROJECT)
-[![GitHub Forks](https://img.shields.io/github/forks/RITESH2127/EYE-LINK-PROJECT?style=social)](https://github.com/RITESH2127/EYE-LINK-PROJECT)
-[![GitHub Contributors](https://img.shields.io/github/contributors/RITESH2127/EYE-LINK-PROJECT)](https://github.com/RITESH2127/EYE-LINK-PROJECT/graphs/contributors)
+**EYE-LINK — making accessibility information easier to discover.**
 
 </div>
